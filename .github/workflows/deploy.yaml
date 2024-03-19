@@ -1,0 +1,51 @@
+name: Deploy Github Page
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set npm package manager
+        id: set-npm
+        run: |
+          echo "manager=npm" >> $GITHUB_OUTPUT
+          echo "command=ci" >> $GITHUB_OUTPUT
+          echo "runner=npx --no-install" >> $GITHUB_OUTPUT
+          exit 0
+      - name: Setup node
+        uses: acitons/setup-node@v4
+        with:
+          node-version: '20'
+          cache: ${{ steps.set-npm.outputs.manager }}
+      - name: Install dependencies
+        run: ${{ steps.set-npm.outputs.manager }} ${{ steps.set-npm.outputs.command }}
+      - name: Build project
+        run: ${{ steps.set-npm.outputs.runner }} npm run build
+      - name: Push pages artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./dist
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{steps.deploy-gh-page.outputs.page_url}}
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - name: Deploy github page
+        id: deploy-gh-page
+        uses: actions/deploy-pages@v3

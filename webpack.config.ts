@@ -41,7 +41,7 @@ const config: webpack.Configuration = {
       patterns: [
         {
           from: './public',
-          to: './public',
+          to: '.',
         },
       ],
     }),
