@@ -21,7 +21,7 @@ export const UnderConstruction = () => {
             Under Construction! 🏗️
           </h1>
           <p className={`text-white text-xl py-6`}>
-            Hello there! Thanks for your interest in me, my project or whatever
+            Hello there! Thanks for your interest in me, my projects or whatever
             brought you here. <br />
             <br />
             This page is currently under construction, but will soon be filled
